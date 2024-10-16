@@ -4,12 +4,14 @@ import datetime
 import re
 
 newLine = '\n'
+hr = "------"
 
 # To use this, replace fileName with the name of the HTML file you want to parse string from.
 # The output file is called output.txt
 fileName = "Legend of the Paladins_ The Forge - Special Channels - special-rp [541292593695293470].html" 
 output = "output.txt"
 
+users = ["Lex, Just The King", "Deleted User", "The Plague Bearer", "The King in Yellow"]
 # 
 
 class MyHTMLParser(HTMLParser):
@@ -22,12 +24,20 @@ class MyHTMLParser(HTMLParser):
         # print("Encountered an end tag :", tag)
         if(tag == "em"):
             ftwo.write("*")
+        if(tag == "a"):
+            ftwo.write(newLine)
+            ftwo.write(hr)
+            ftwo.write(newLine)
 
     def handle_data(self, data):
         # print("Encountered some data  :", data)
+        for user in users:
+            if(data == user):
+                ftwo.write(hr)
+                ftwo.write(newLine)
         ftwo.write(data)
 
-# READ THE GIVEN FILENAME
+# READ THE GIVEN FILENAM
 f = open(fileName, "r")
 print("Reading file now...")
 
