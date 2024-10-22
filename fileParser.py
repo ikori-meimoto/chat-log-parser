@@ -40,23 +40,17 @@ class MyHTMLParser(HTMLParser):
         # print("Encountered a start tag:", tag)
         # print("Encountered an attribute: ", attrs)
 
-        if attrs['chatlog__author'] == 'attorney_lucifer':
-            print("Message from Lex")
-            indicator = msgType.name
-        elif attrs['chatlog__author'] == 'attorney_lucifer':
-            print("Message from Lex")
-            indicator = msgType.name
-        elif attrs['chatlog__author'] == 'attorney_lucifer':
-            print("Message from Lex")
-            indicator = msgType.name
-        elif attrs['chatlog__markdown-preserve']
-
+        for user in users:
+            if attrs['title'] == user:
+                indicator = msgType.NAME
+        if attrs['class'] == 'chalog__timestamp':
+            print("Date & Time is ", attrs['title'])
+            indicator = msgType.DATE_TIME
+        else:
+            indicator = msgType.TEXT
         # PRESERVE THE ACTION SYNTAX FROM THE CHAT
         if(tag == "em"):
-            ftwo.write("*") 
-        # SHOULD MAKE A NEW LINE AFTER THE TIMESTAMP
-        if(tag == "a"):
-            ftwo.write(newLine)
+            ftwo.write("*")
 
     def handle_endtag(self, tag):
         # print("Encountered an end tag :", tag)
@@ -68,9 +62,34 @@ class MyHTMLParser(HTMLParser):
         # print("Encountered some data  :", data)
         # WRITES THE DATA TO THE OUTPUT FILE
 
-        ftwo.write(data)
+        if indicator == msgType.NAME:
+            currentName = data
+            ftwo.write(data)
+            ftwo.write(" ")
+        elif indicator == msgType.DATE_TIME:
+            currentDAT = data
+            ftwo.write(data) 
+            ftwo.write(newLine)
+        elif indicator == msgType.TEXT:
+            currentText = data
+            ftwo.write(data)
+            ftwo.write(newLine)
 
-def msgTypeInd(data):
+        
+
+# def csv_save(currentName, currentDAT, currentText):
+#     currentMsg = [
+#         currentName,
+#         currentDAT,
+#         currentText
+#     ]
+
+#         # Open the file in write mode
+#     with open(csv_output, mode='w', newline='') as file:
+#         # Create a csv.writer object
+#         writer = csv.writer(file)
+#         # Write data to the CSV file
+#         writer.writerows(data)
 
 
 # READ THE GIVEN FILENAME
@@ -98,9 +117,7 @@ print(today)
 ftwo.write(today.strftime("%x"))
 ftwo.write(newLine)
 for x in f:
-    # NEW MESSAGE TO PUT IN CSV FILE
-    currentMsg = []
-
+    # NEW MESSAGE TO PUT IN CSV FILE  
     parser.feed(x)
     ftwo.write(newLine)
 
