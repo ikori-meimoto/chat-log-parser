@@ -1,43 +1,79 @@
 from html.parser import HTMLParser
+from enum import Enum
 import os
 import datetime
-import re
+import csv
 
 newLine = '\n'
-hr = "------"
 
 # To use this, replace fileName with the name of the HTML file you want to parse string from.
 # The output file is called output.txt
 fileName = "Legend of the Paladins_ The Forge - Special Channels - special-rp [541292593695293470].html" 
 output = "output.txt"
+csv_output = "output.csv"
 
-users = ["Lex, Just The King", "Deleted User", "The Plague Bearer", "The King in Yellow"]
-# 
+chatLog = [
+    ["NAME","DATE & TIME", "TEXT"]
+]
+
+users = [
+    'attorney_lucifer',
+    'ikori_coolguy',
+    'pat.jesus',
+    'Deleted User'
+]
+
+class msgData(Enum):
+    name = 0
+    dat = 1
+    text = 2
+
+class msgType(Enum):
+    NAME = 1
+    DATE_TIME = 2
+    TEXT = 3
+
+indicator = msgType.NAME
 
 class MyHTMLParser(HTMLParser):
     def handle_starttag(self, tag, attrs):
         # print("Encountered a start tag:", tag)
+        # print("Encountered an attribute: ", attrs)
+
+        if attrs['chatlog__author'] == 'attorney_lucifer':
+            print("Message from Lex")
+            indicator = msgType.name
+        elif attrs['chatlog__author'] == 'attorney_lucifer':
+            print("Message from Lex")
+            indicator = msgType.name
+        elif attrs['chatlog__author'] == 'attorney_lucifer':
+            print("Message from Lex")
+            indicator = msgType.name
+        elif attrs['chatlog__markdown-preserve']
+
+        # PRESERVE THE ACTION SYNTAX FROM THE CHAT
         if(tag == "em"):
-            ftwo.write("*")
+            ftwo.write("*") 
+        # SHOULD MAKE A NEW LINE AFTER THE TIMESTAMP
+        if(tag == "a"):
+            ftwo.write(newLine)
 
     def handle_endtag(self, tag):
         # print("Encountered an end tag :", tag)
+        # PRESERVE THE ACTION SYNTAX FROM THE CHAT
         if(tag == "em"):
             ftwo.write("*")
-        if(tag == "a"):
-            ftwo.write(newLine)
-            ftwo.write(hr)
-            ftwo.write(newLine)
 
     def handle_data(self, data):
         # print("Encountered some data  :", data)
-        for user in users:
-            if(data == user):
-                ftwo.write(hr)
-                ftwo.write(newLine)
+        # WRITES THE DATA TO THE OUTPUT FILE
+
         ftwo.write(data)
 
-# READ THE GIVEN FILENAM
+def msgTypeInd(data):
+
+
+# READ THE GIVEN FILENAME
 f = open(fileName, "r")
 print("Reading file now...")
 
@@ -55,14 +91,18 @@ parser = MyHTMLParser()
 
 # GRAB CURRENT DATE AND TIME
 today  = datetime.datetime.now()
-print("Current date is ")
 print(today)
-print(".")
+
 
 # START WRITING TO FILE
 ftwo.write(today.strftime("%x"))
 ftwo.write(newLine)
 for x in f:
+    # NEW MESSAGE TO PUT IN CSV FILE
+    currentMsg = []
+
     parser.feed(x)
     ftwo.write(newLine)
+
     
+parser.close()
