@@ -3,6 +3,9 @@ from enum import Enum
 import os
 import datetime
 import csv
+import re
+
+# ----------------------------------------------------------------------------------------------------
 
 newLine = '\n'
 
@@ -10,11 +13,8 @@ newLine = '\n'
 # The output file is called output.txt
 fileName = "Legend of the Paladins_ The Forge - Special Channels - special-rp [541292593695293470].html" 
 output = "output.txt"
+output_debug = "output-debug.txt"
 csv_output = "output.csv"
-
-chatLog = [
-    ["NAME","DATE & TIME", "TEXT"]
-]
 
 users = [
     'attorney_lucifer',
@@ -35,62 +35,58 @@ class msgType(Enum):
 
 indicator = msgType.NAME
 
+# ----------------------------------------------------------------------------------------------------
+
 class MyHTMLParser(HTMLParser):
     def handle_starttag(self, tag, attrs):
         # print("Encountered a start tag:", tag)
-        # print("Encountered an attribute: ", attrs)
+        debugWrite1(tag)
 
-        for user in users:
-            if attrs['title'] == user:
-                indicator = msgType.NAME
-        if attrs['class'] == 'chalog__timestamp':
-            print("Date & Time is ", attrs['title'])
-            indicator = msgType.DATE_TIME
-        else:
-            indicator = msgType.TEXT
+        print("Encountered an attribute: ", attrs)
+
+        for attr in attrs:
+            debugWrite2(attr)
+
         # PRESERVE THE ACTION SYNTAX FROM THE CHAT
         if(tag == "em"):
-            ftwo.write("*")
+            f_TWO.write("*")
 
     def handle_endtag(self, tag):
         # print("Encountered an end tag :", tag)
+        debugWrite1(tag)
+
         # PRESERVE THE ACTION SYNTAX FROM THE CHAT
         if(tag == "em"):
-            ftwo.write("*")
+            f_TWO.write("*")
+        if tag == "a":
+            f_TWO.write(newLine)
+        
 
     def handle_data(self, data):
         # print("Encountered some data  :", data)
+        debugWrite3(data)
+
         # WRITES THE DATA TO THE OUTPUT FILE
+        f_TWO.write(data)
 
-        if indicator == msgType.NAME:
-            currentName = data
-            ftwo.write(data)
-            ftwo.write(" ")
-        elif indicator == msgType.DATE_TIME:
-            currentDAT = data
-            ftwo.write(data) 
-            ftwo.write(newLine)
-        elif indicator == msgType.TEXT:
-            currentText = data
-            ftwo.write(data)
-            ftwo.write(newLine)
+# ----------------------------------------------------------------------------------------------------
 
-        
+def debugWrite1(tag):
+    debug.write("tag: ")
+    debug.write(tag)
+    debug.write(newLine)   
 
-# def csv_save(currentName, currentDAT, currentText):
-#     currentMsg = [
-#         currentName,
-#         currentDAT,
-#         currentText
-#     ]
+def debugWrite2(attr):
+    debug.write("attrible: ")
+    debug.write(attr[1])
+    debug.write(newLine)
 
-#         # Open the file in write mode
-#     with open(csv_output, mode='w', newline='') as file:
-#         # Create a csv.writer object
-#         writer = csv.writer(file)
-#         # Write data to the CSV file
-#         writer.writerows(data)
+def debugWrite3(data):
+    debug.write("data: ")
+    debug.write(data)
+    debug.write(newLine)
 
+# ----------------------------------------------------------------------------------------------------
 
 # READ THE GIVEN FILENAME
 f = open(fileName, "r")
@@ -102,11 +98,18 @@ if os.path.exists(output):
   os.remove(output)
 
 # CREATE OUTPUT FILE
-ftwo = open(output, "a")
+f_TWO = open(output, "a")
 print("Created output file")
 
 # OPEN HTML PARSER
 parser = MyHTMLParser()
+
+if os.path.exists(output_debug):
+    print("Deleting old output debug file...")
+    os.remove(output_debug)
+
+debug = open(output_debug, "a")
+print("Created output file")
 
 # GRAB CURRENT DATE AND TIME
 today  = datetime.datetime.now()
@@ -114,12 +117,12 @@ print(today)
 
 
 # START WRITING TO FILE
-ftwo.write(today.strftime("%x"))
-ftwo.write(newLine)
+f_TWO.write(today.strftime("%x"))
+f_TWO.write(newLine)
 for x in f:
     # NEW MESSAGE TO PUT IN CSV FILE  
     parser.feed(x)
-    ftwo.write(newLine)
+    f_TWO.write(newLine)
 
     
 parser.close()
