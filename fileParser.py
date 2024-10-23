@@ -23,37 +23,51 @@ users = [
     'Deleted User'
 ]
 
-class msgData(Enum):
-    name = 0
-    dat = 1
-    text = 2
+alias = [
+    "Lex, Just The King",
+    "The Plague Bearer",
+    "King in Yellow",
+    "Deleted User"
+]
 
-class msgType(Enum):
-    NAME = 1
-    DATE_TIME = 2
-    TEXT = 3
+strsToLookFor = [
+    "chatlog__timestamp",
+    "chatlog__markdown-preserve",
+    "chatlog__short-timestamp"
+]
 
-indicator = msgType.NAME
+chatLog = {}
+
+NAME = 1
+DATE_TIME = 2
+TEXT = 3
+
+id = 0
 
 # ----------------------------------------------------------------------------------------------------
 
 class MyHTMLParser(HTMLParser):
     def handle_starttag(self, tag, attrs):
         # print("Encountered a start tag:", tag)
-        debugWrite1(tag)
+        # print("Encountered an attribute: ", attrs)
+        # debugWrite1(tag)
 
-        print("Encountered an attribute: ", attrs)
+        # for attr in attrs:
+        #     this = attr[1]
+            
+        #     print("attr[1]: ", attr[1])
+        #     debugWrite2(attr)
 
-        for attr in attrs:
-            debugWrite2(attr)
 
         # PRESERVE THE ACTION SYNTAX FROM THE CHAT
         if(tag == "em"):
             f_TWO.write("*")
+        if tag == "a":
+            f_TWO.write(newLine)
 
     def handle_endtag(self, tag):
         # print("Encountered an end tag :", tag)
-        debugWrite1(tag)
+        # debugWrite1(tag)
 
         # PRESERVE THE ACTION SYNTAX FROM THE CHAT
         if(tag == "em"):
@@ -63,8 +77,68 @@ class MyHTMLParser(HTMLParser):
         
 
     def handle_data(self, data):
+        # print(newLine)
         # print("Encountered some data  :", data)
-        debugWrite3(data)
+
+        dtReg = "(\d{1}|\d{2})/(\d{1}|\d{2})/(\d{4}) (\d{1}|\d{2}):(\d{2}):(\d{2}) AM|(\d{1}|\d{2})/(\d{1}|\d{2})/(\d{4}) (\d{1}|\d{2}):(\d{2}):(\d{2}) PM"
+
+        user1 = re.search(alias[0], data)
+        user2 = re.search(alias[1], data)
+        user3 = re.search(alias[2], data)
+        user4 = re.search(alias[3], data)
+        dateTime = re.search("\d", data)
+
+        if user1 != None:
+            ugh(NAME, data)
+
+            # print("user ", 1, ": ", user1)
+            debug.write("name: ")
+            # print("name: ", data)
+
+        elif user2 != None:
+            ugh(NAME, data)
+
+            # print("user ", 2, ": ", user2)
+            debug.write("name: ")
+            # print("name: ", data)
+
+        elif user3 != None:
+            ugh(NAME, data)
+
+            # print("user ", 3, ": ", user3)
+            debug.write("name: ")
+            # print("name: ", data)
+
+        elif user4 != None:
+            ugh(NAME, data)
+
+            # print("user ", 4, ": ", user4)
+            debug.write("name: ")
+            # print("name: ", data)
+
+        elif dateTime != None:
+            ugh(DATE_TIME, data)
+
+            # print("dateTime: ", dateTime)
+            debug.write("date&time: ")
+            # print("date&time: ", data)
+
+        elif data != " ":
+            ugh(TEXT, data)
+
+            # print("This is text")
+            debug.write("text: ")
+            # print("text: ", data)
+        
+        elif data != newLine:
+            ugh(TEXT, data)
+
+            # print("This is text")
+            debug.write("text: ")
+            # print("text: ", data)
+
+        debug.write(data)
+        debug.write(newLine)
 
         # WRITES THE DATA TO THE OUTPUT FILE
         f_TWO.write(data)
@@ -82,10 +156,40 @@ def debugWrite2(attr):
     debug.write(newLine)
 
 def debugWrite3(data):
-    debug.write("data: ")
+    print("debug write indicator: ", indicator)
+
+    if indicator == NAME:
+        debug.write("name: ")
+        print("name: ", data)
+    elif indicator == DATE_TIME:
+        debug.write("date&time: ")
+        print("date&time: ", data)
+    elif indicator == TEXT:
+        debug.write("text: ")
+        print("text: ", data)
+
     debug.write(data)
     debug.write(newLine)
 
+def ugh(type, data):
+    msg = [
+        id
+    ]
+
+    if(type == NAME):
+        msg.append(data) 
+    elif type == DATE_TIME:
+        msg.append(data)
+    elif type == TEXT:
+        msg.append(data)
+
+    print(msg)
+
+    chatLog.update({id:msg})
+
+    print(chatLog.get(id))
+
+    
 # ----------------------------------------------------------------------------------------------------
 
 # READ THE GIVEN FILENAME
@@ -109,7 +213,7 @@ if os.path.exists(output_debug):
     os.remove(output_debug)
 
 debug = open(output_debug, "a")
-print("Created output file")
+print("Created debug output file")
 
 # GRAB CURRENT DATE AND TIME
 today  = datetime.datetime.now()
@@ -123,6 +227,8 @@ for x in f:
     # NEW MESSAGE TO PUT IN CSV FILE  
     parser.feed(x)
     f_TWO.write(newLine)
+    id+=1
 
-    
+print(chatLog)
+
 parser.close()
