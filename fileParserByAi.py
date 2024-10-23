@@ -35,6 +35,6 @@ def parse_html_to_csv(input_html_file, output_csv_file):
     print(f"Data has been successfully written to {output_csv_file}")
 
 if __name__ == "__main__":
-    input_html_file = 'C:\Users\capta\OneDrive\Documents\GitHub\lotp\Legend of the Paladins_ The Forge - Special Channels - special-rp [541292593695293470].html'  # Replace with your input HTML file name
+    input_html_file = 'Legend of the Paladins_ The Forge - Special Channels - special-rp [541292593695293470].html'  # Replace with your input HTML file name
     output_csv_file = 'output.csv'  # Replace with your output CSV file name
     parse_html_to_csv(input_html_file, output_csv_file)
