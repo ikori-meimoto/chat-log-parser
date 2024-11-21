@@ -127,14 +127,14 @@ class MyHTMLParser(HTMLParser):
             ugh(TEXT, data)
 
             # print("This is text")
-            debug.write("text: ")
+            debug.write(" ")
             # print("text: ", data)
         
         elif data != newLine:
             ugh(TEXT, data)
 
             # print("This is text")
-            debug.write("text: ")
+            debug.write("---")
             # print("text: ", data)
 
         debug.write(data)
@@ -144,32 +144,6 @@ class MyHTMLParser(HTMLParser):
         f_TWO.write(data)
 
 # ----------------------------------------------------------------------------------------------------
-
-def debugWrite1(tag):
-    debug.write("tag: ")
-    debug.write(tag)
-    debug.write(newLine)   
-
-def debugWrite2(attr):
-    debug.write("attrible: ")
-    debug.write(attr[1])
-    debug.write(newLine)
-
-def debugWrite3(data):
-    print("debug write indicator: ", indicator)
-
-    if indicator == NAME:
-        debug.write("name: ")
-        print("name: ", data)
-    elif indicator == DATE_TIME:
-        debug.write("date&time: ")
-        print("date&time: ", data)
-    elif indicator == TEXT:
-        debug.write("text: ")
-        print("text: ", data)
-
-    debug.write(data)
-    debug.write(newLine)
 
 def ugh(type, data):
     msg = [
@@ -183,11 +157,10 @@ def ugh(type, data):
     elif type == TEXT:
         msg.append(data)
 
-    print(msg)
-
     chatLog.update({id:msg})
-
-    print(chatLog.get(id))
+    # print(chatLog.get(id))
+    # print(" compare to ")
+    # print(msg)
 
     
 # ----------------------------------------------------------------------------------------------------
@@ -228,7 +201,10 @@ for x in f:
     parser.feed(x)
     f_TWO.write(newLine)
     id+=1
+    parser.close()
 
-print(chatLog)
-
-parser.close()
+with open('output.csv', 'w', newline='') as csvfile:
+    fieldnames = ['id', 'msg']
+    writer = csv.DictWriter(csvfile, fieldnames=fieldnames)
+    writer.writeheader()
+    writer.writerows(chatLog)
