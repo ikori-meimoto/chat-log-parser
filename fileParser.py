@@ -4,6 +4,7 @@ import os
 import datetime
 import csv
 import re
+import json
 
 # ----------------------------------------------------------------------------------------------------
 
@@ -11,7 +12,7 @@ newLine = '\n'
 
 # To use this, replace fileName with the name of the HTML file you want to parse string from.
 # The output file is called output.txt
-fileName = "Legend of the Paladins_ The Forge - Special Channels - special-rp [541292593695293470].html" 
+fileName = "test.html" 
 output = "output.txt"
 output_debug = "output-debug.txt"
 csv_output = "output.csv"
@@ -48,17 +49,6 @@ id = 0
 
 class MyHTMLParser(HTMLParser):
     def handle_starttag(self, tag, attrs):
-        # print("Encountered a start tag:", tag)
-        # print("Encountered an attribute: ", attrs)
-        # debugWrite1(tag)
-
-        # for attr in attrs:
-        #     this = attr[1]
-            
-        #     print("attr[1]: ", attr[1])
-        #     debugWrite2(attr)
-
-
         # PRESERVE THE ACTION SYNTAX FROM THE CHAT
         if(tag == "em"):
             f_TWO.write("*")
@@ -66,9 +56,6 @@ class MyHTMLParser(HTMLParser):
             f_TWO.write(newLine)
 
     def handle_endtag(self, tag):
-        # print("Encountered an end tag :", tag)
-        # debugWrite1(tag)
-
         # PRESERVE THE ACTION SYNTAX FROM THE CHAT
         if(tag == "em"):
             f_TWO.write("*")
@@ -77,11 +64,6 @@ class MyHTMLParser(HTMLParser):
         
 
     def handle_data(self, data):
-        # print(newLine)
-        # print("Encountered some data  :", data)
-
-        dtReg = "(\d{1}|\d{2})/(\d{1}|\d{2})/(\d{4}) (\d{1}|\d{2}):(\d{2}):(\d{2}) AM|(\d{1}|\d{2})/(\d{1}|\d{2})/(\d{4}) (\d{1}|\d{2}):(\d{2}):(\d{2}) PM"
-
         user1 = re.search(alias[0], data)
         user2 = re.search(alias[1], data)
         user3 = re.search(alias[2], data)
@@ -90,52 +72,33 @@ class MyHTMLParser(HTMLParser):
 
         if user1 != None:
             ugh(NAME, data)
-
-            # print("user ", 1, ": ", user1)
             debug.write("name: ")
-            # print("name: ", data)
 
         elif user2 != None:
             ugh(NAME, data)
-
-            # print("user ", 2, ": ", user2)
             debug.write("name: ")
-            # print("name: ", data)
 
         elif user3 != None:
             ugh(NAME, data)
-
-            # print("user ", 3, ": ", user3)
             debug.write("name: ")
-            # print("name: ", data)
 
         elif user4 != None:
             ugh(NAME, data)
-
-            # print("user ", 4, ": ", user4)
             debug.write("name: ")
-            # print("name: ", data)
 
         elif dateTime != None:
             ugh(DATE_TIME, data)
-
-            # print("dateTime: ", dateTime)
             debug.write("date&time: ")
-            # print("date&time: ", data)
 
         elif data != " ":
-            ugh(TEXT, data)
-
-            # print("This is text")
             debug.write(" ")
-            # print("text: ", data)
         
         elif data != newLine:
             ugh(TEXT, data)
-
-            # print("This is text")
             debug.write("---")
-            # print("text: ", data)
+        else:
+            ugh(TEXT, data)
+            debug.write(data)
 
         debug.write(data)
         debug.write(newLine)
@@ -147,15 +110,8 @@ class MyHTMLParser(HTMLParser):
 
 def ugh(type, data):
     msg = [
-        id
+        id, data
     ]
-
-    if(type == NAME):
-        msg.append(data) 
-    elif type == DATE_TIME:
-        msg.append(data)
-    elif type == TEXT:
-        msg.append(data)
 
     chatLog.update({id:msg})
     # print(chatLog.get(id))
@@ -203,8 +159,10 @@ for x in f:
     id+=1
     parser.close()
 
-with open('output.csv', 'w', newline='') as csvfile:
-    fieldnames = ['id', 'msg']
-    writer = csv.DictWriter(csvfile, fieldnames=fieldnames)
-    writer.writeheader()
-    writer.writerows(chatLog)
+debug.write(json.dumps(chatLog,indent=4))
+
+# with open('output.csv', 'w', newline='') as csvfile:
+#     fieldnames = ['id', 'msg']
+#     writer = csv.DictWriter(csvfile, fieldnames=fieldnames)
+#     writer.writeheader()
+#     writer.writerows(chatLog)
