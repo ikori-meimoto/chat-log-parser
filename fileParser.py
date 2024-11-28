@@ -43,7 +43,6 @@ NAME = 1
 DATE_TIME = 2
 TEXT = 3
 
-id = 0
 
 # ----------------------------------------------------------------------------------------------------
 
@@ -71,35 +70,28 @@ class MyHTMLParser(HTMLParser):
         dateTime = re.search("\d", data)
 
         if user1 != None:
-            ugh(NAME, data)
             debug.write("name: ")
 
         elif user2 != None:
-            ugh(NAME, data)
             debug.write("name: ")
 
         elif user3 != None:
-            ugh(NAME, data)
             debug.write("name: ")
 
         elif user4 != None:
-            ugh(NAME, data)
             debug.write("name: ")
 
         elif dateTime != None:
-            ugh(DATE_TIME, data)
             debug.write("date&time: ")
 
         elif data != " ":
             debug.write(" ")
         
         elif data != newLine:
-            ugh(TEXT, data)
             debug.write("---")
-        else:
-            ugh(TEXT, data)
-            debug.write(data)
 
+
+        updateChatLog(data)
         debug.write(data)
         debug.write(newLine)
 
@@ -108,15 +100,14 @@ class MyHTMLParser(HTMLParser):
 
 # ----------------------------------------------------------------------------------------------------
 
-def ugh(type, data):
-    msg = [
-        id, data
-    ]
-
-    chatLog.update({id:msg})
-    # print(chatLog.get(id))
-    # print(" compare to ")
-    # print(msg)
+def updateChatLog(data):
+    if(data != " " or data != newLine):
+        print("Updating chatLog with ")
+        print(data)
+        print(" at id: ")
+        print(intId)
+        chatLog['id':intId] = {'msgId':msgId,'data':data}
+        intId+=1
 
     
 # ----------------------------------------------------------------------------------------------------
@@ -150,19 +141,21 @@ print(today)
 
 
 # START WRITING TO FILE
+msgId = 0
+intId = 0
 f_TWO.write(today.strftime("%x"))
 f_TWO.write(newLine)
 for x in f:
     # NEW MESSAGE TO PUT IN CSV FILE  
     parser.feed(x)
     f_TWO.write(newLine)
-    id+=1
+    msgId+=1
     parser.close()
 
 debug.write(json.dumps(chatLog,indent=4))
 
-# with open('output.csv', 'w', newline='') as csvfile:
-#     fieldnames = ['id', 'msg']
-#     writer = csv.DictWriter(csvfile, fieldnames=fieldnames)
-#     writer.writeheader()
-#     writer.writerows(chatLog)
+with open(csv_output, 'w', newline='') as csvfile:
+    fieldnames = ['id','msgId','data']
+    writer = csv.DictWriter(csvfile, fieldnames=fieldnames)
+    writer.writeheader()
+    writer.writerows(chatLog)
