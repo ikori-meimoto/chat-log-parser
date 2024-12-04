@@ -84,13 +84,12 @@ class MyHTMLParser(HTMLParser):
         elif dateTime != None:
             debug.write("date&time: ")
 
-        elif data != " ":
+        elif data == " ":
             debug.write(" ")
         
-        elif data != newLine:
+        elif data == newLine:
             debug.write("---")
-
-
+            
         updateChatLog(data)
         debug.write(data)
         debug.write(newLine)
@@ -103,12 +102,14 @@ intId = 0
 
 def updateChatLog(data):
     global intId
-    if(data != " " or data != newLine):
+    if(data != " " or data != '\n'):
         print("Updating chatLog with ")
         print(data)
         print(" at id: ")
+        print(intId)
+        
+        chatLog[intId] = {'id':intId,'msgId':msgId,'data':data}
         intId+=1
-        chatLog[intId] = {'msgId':msgId,'data':data}
 
     
 # ----------------------------------------------------------------------------------------------------
@@ -157,4 +158,5 @@ with open(csv_output, 'w', newline='') as csvfile:
     fieldnames = ['id','msgId','data']
     writer = csv.DictWriter(csvfile, fieldnames=fieldnames)
     writer.writeheader()
-    writer.writerows(chatLog)
+    for msg in chatLog:
+        writer.writerow(chatLog[msg])
