@@ -8,7 +8,6 @@ import json
 
 # ----------------------------------------------------------------------------------------------------
 msgId = 0
-intId = 0
 newLine = '\n'
 
 # To use this, replace fileName with the name of the HTML file you want to parse string from.
@@ -100,14 +99,16 @@ class MyHTMLParser(HTMLParser):
         f_TWO.write(data)
 
 # ----------------------------------------------------------------------------------------------------
+intId = 0
 
 def updateChatLog(data):
+    global intId
     if(data != " " or data != newLine):
         print("Updating chatLog with ")
         print(data)
         print(" at id: ")
-        intId = intId+1
-        chatLog['id':intId] = {'msgId':msgId,'data':data}
+        intId+=1
+        chatLog[intId] = {'msgId':msgId,'data':data}
 
     
 # ----------------------------------------------------------------------------------------------------
