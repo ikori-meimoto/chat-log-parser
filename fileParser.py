@@ -7,7 +7,8 @@ import re
 import json
 
 # ----------------------------------------------------------------------------------------------------
-
+msgId = 0
+intId = 0
 newLine = '\n'
 
 # To use this, replace fileName with the name of the HTML file you want to parse string from.
@@ -105,9 +106,8 @@ def updateChatLog(data):
         print("Updating chatLog with ")
         print(data)
         print(" at id: ")
-        print(intId)
+        intId = intId+1
         chatLog['id':intId] = {'msgId':msgId,'data':data}
-        intId+=1
 
     
 # ----------------------------------------------------------------------------------------------------
@@ -141,8 +141,6 @@ print(today)
 
 
 # START WRITING TO FILE
-msgId = 0
-intId = 0
 f_TWO.write(today.strftime("%x"))
 f_TWO.write(newLine)
 for x in f:
