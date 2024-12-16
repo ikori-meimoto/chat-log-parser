@@ -102,8 +102,8 @@ intId = 0
 
 def updateChatLog(data):
     global intId
-    if(data != " " or data != '\n'):
-        print("Updating chatLog with ")
+    if(data != ' ' or data != '\n'):
+        print("Updating chatLog with ") 
         print(data)
         print(" at id: ")
         print(intId)

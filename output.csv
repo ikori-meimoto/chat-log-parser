@@ -184,11 +184,14 @@ id,msgId,data
 151,31,2/17/2019 2:53 PM
 152,31,Me: 
 153,31,I look to the reception lady
-154,31,""
-155,32,"Woman: Thats up to you! They can follow or stay here!"
+154,31,"
+"
+155,32,"Woman: Thats up to you! They can follow or stay here!
+"
 156,33,Me: 
 157,33,I look back to Mar
-158,33," I don't mind if you follow, you can if you'd like..."
+158,33," I don't mind if you follow, you can if you'd like...
+"
 159,34,Fear: 
 160,34,lightly jogs over next to me
 161,34,"
